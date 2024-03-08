@@ -1,0 +1,196 @@
+package live.tesnetwork.kdg.stockofmedication.controller;
+
+import live.tesnetwork.kdg.stockofmedication.entity.Medication;
+import live.tesnetwork.kdg.stockofmedication.entity.User;
+import live.tesnetwork.kdg.stockofmedication.entity.UserMedication;
+import live.tesnetwork.kdg.stockofmedication.utils.Config;
+import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
+import live.tesnetwork.kdg.stockofmedication.utils.EncryptionHelper;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.*;
+
+public class FileDatabaseController implements DatabaseController {
+    private final Config config;
+    private final String rootPath;
+
+    private final String medicationPath;
+
+    private final String userMedicationPath;
+    private final String userPath;
+
+    public FileDatabaseController(Config config) {
+        this.config = config;
+        this.rootPath = config.get("PATH_ROOT");
+        this.medicationPath = rootPath + config.get("MEDICATION_SUB_PATH");
+        this.userMedicationPath = rootPath + config.get("USER_MEDICATION_SUB_PATH");
+        this.userPath = rootPath + config.get("USERS_SUB_PATH");
+    }
+
+    @Override
+    public boolean createMedication(Medication medication) {
+        File file = getOrCreateFile(medicationPath, medication.getName());
+        return writeToFile(file, medication);
+    }
+
+    @Override
+    public boolean deleteMedicationByName(String name) {
+        File file = new File(medicationPath + name);
+        return file.delete();
+    }
+
+    @Override
+    public Medication getMedicationByName(String name) {
+        return readFromFile(getOrCreateFile(medicationPath, name));
+    }
+
+    @Override
+    public List<Medication> getMedications() {
+        Path path = Path.of(medicationPath);
+        return Arrays.stream(path.toFile().listFiles())
+                .map(this::readFromFile)
+                .filter(Medication.class::isInstance)
+                .map(Medication.class::cast)
+                .toList();
+    }
+
+    @Override
+    public UserMedication getUserMedication(String id, String name) {
+        return readFromFile(getOrCreateFile(userMedicationPath + id, name));
+    }
+
+    @Override
+    public List<UserMedication> getUserMedications(String id) {
+        File path = new File(userMedicationPath + id);
+        if (!path.exists()) path.mkdirs();
+        File[] files = path.listFiles();
+        return Arrays.stream(files)
+                .map(this::readFromFile)
+                .filter(UserMedication.class::isInstance)
+                .map(UserMedication.class::cast)
+                .toList();
+    }
+
+    @Override
+    public boolean saveUserMedication(String id, UserMedication userMedication) {
+        File file = getOrCreateFile(userMedicationPath + id, userMedication.getName());
+        return writeToFile(file, userMedication);
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        File file = getOrCreateFile(userPath, username, false);
+        if (file.exists()) return readFromFile(file, User.class);
+        else return null;
+    }
+
+    @Override
+    public boolean createUser(String username, String password) {
+        File file = getOrCreateFile(userPath, username);
+        return writeToFile(file, new User(username, EncryptionHelper.hashPassword(password)));
+    }
+
+    public File getOrCreateFile(String path, String fileName) {
+        return getOrCreateFile(path + fileName);
+    }
+
+    public File getOrCreateFile(String path, String fileName, boolean createIfNotExist) {
+        return getOrCreateFile(path + fileName, createIfNotExist);
+    }
+
+    public File getOrCreateFile(String path) {
+        return getOrCreateFile(path, true);
+    }
+    public File getOrCreateFile(String path, boolean createIfNotExist) {
+        File file = new File(path);
+        if (!file.exists() && createIfNotExist) {
+            try {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Could not create file");
+            }
+        }
+        return file;
+    }
+
+
+    private boolean writeToFile(File file, Convertable convertable) {
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write("@%s\n".formatted(convertable.getClass().getSimpleName()));
+            convertable.toMap().forEach((key, value) -> {
+                try {
+                    writer.write("%s:%s\n".formatted(key, escapeSpecialCharacters(value)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private <T extends Convertable> T readFromFile(File file) {
+        try {
+            Scanner scanner = new Scanner(file);
+            scanner.useDelimiter("\n");
+            String fileType = scanner.next();
+            scanner.close();
+            switch (fileType) {
+                case "@Medication":
+                    return (T) readFromFile(file, Medication.class);
+                case "@User":
+                    return (T) readFromFile(file, User.class);
+                case "@UserMedication":
+                    return (T) readFromFile(file, UserMedication.class);
+                default:
+                    throw new IllegalArgumentException("Invalid file type");
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private <T extends Convertable> T readFromFile(File file, Class<T> object) {
+        Map<String, String> map = new HashMap<>();
+        try {
+            Scanner scanner = new Scanner(file);
+            scanner.useDelimiter("\n");
+            String fileType = scanner.next();
+            if (fileType.isBlank() || fileType.equals("@%s\n".formatted(object.getSimpleName()))) {
+                throw new IllegalArgumentException("Invalid file type");
+            }
+            while (scanner.hasNext()) {
+                String fileContents = scanner.next();
+                if (!fileContents.startsWith("@")) {
+                    String[] v = fileContents.split(":");
+                    map.put(v[0], v[1]);
+                }
+            }
+            scanner.close();
+            return Convertable.to(map, object);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private String escapeSpecialCharacters(String str) {
+        return str.replace("\\", "\\\\").replace("\n", "\\n").replace("\r", "\\r");
+    }
+}

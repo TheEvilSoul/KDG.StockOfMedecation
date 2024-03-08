@@ -1,29 +1,40 @@
 package live.tesnetwork.kdg.stockofmedication.entity;
 
-public class MedicationCategory {
-    public static final MedicationCategory ALL = new MedicationCategory(0, "All");
-    private final Integer id;
-    private String name;
-
-    public MedicationCategory(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof MedicationCategory) {
-            return ((MedicationCategory) obj).getName().equals(getName());
-        }
-        return false;
-    }
+public enum MedicationCategory {
+    ALL,
+    ANALGESICS,
+    ANESTHETICS,
+    ANTIHISTAMINES,
+    ANTIMETICS,
+    ANTIBIOTICS,
+    ANTICOAGULANTS,
+    ANTICONVULSANTS,
+    ANTIDEPRESSANTS,
+    ANTIDIABETIC_DRUGS,
+    ANTIFUNGALS,
+    ANTIHYPERTENSIVES,
+    ANTI_INFLAMMATORY_DRUGS,
+    ANTINEOPLASTICS,
+    ANTIPARASITIC_DRUGS,
+    ANTIPSYCHOTICS,
+    ANTITUSSIVES,
+    ANTIVIRALS,
+    ANXIOLYTICS,
+    BARBITURATES,
+    BENZODIAZEPINES,
+    BETA_BLOCKERS,
+    CALCIUM_CHANNEL_BLOCKERS,
+    CARDIAC_GLYCOSIDES,
+    DIURETICS,
+    HORMONES,
+    MUSCLE_RELAXANTS,
+    NSAIDS,
+    OPIOIDS,
+    OTHER,
+    SEDATIVES,
+    STIMULANTS,
+    STATINS,
+    THYROID_HORMONES,
+    VACCINES,
+    VASODILATORS
 }

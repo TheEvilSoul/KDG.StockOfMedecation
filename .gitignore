@@ -44,3 +44,5 @@ bin/
 ### Jordy Badisco ###
 .idea
 .env
+testFiles
+outputFiles

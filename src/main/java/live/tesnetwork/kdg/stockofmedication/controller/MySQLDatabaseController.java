@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 
-public class MySQLDatabaseController implements DatabaseController {
+public class MySQLDatabaseController {
 
     private Connection connection;
 
@@ -42,14 +42,12 @@ public class MySQLDatabaseController implements DatabaseController {
     }
 
     @Nullable
-    @Override
     public User getUserByUsername(String username) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_USERNAME)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return new User(
-                            resultSet.getInt("userId"),
                             resultSet.getString("username"),
                             resultSet.getString("passwordHash")
                     );
@@ -61,7 +59,6 @@ public class MySQLDatabaseController implements DatabaseController {
         return null;
     }
 
-    @Override
     public boolean createUser(String name, String password, boolean isAHash) {
         if (!isAHash) password = EncryptionHelper.hashPassword(password);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
@@ -78,7 +75,6 @@ public class MySQLDatabaseController implements DatabaseController {
         return false;
     }
 
-    @Override
     public boolean deleteUserByUsername(String username) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_BY_USERNAME)) {
             preparedStatement.setString(1, username);
@@ -92,7 +88,6 @@ public class MySQLDatabaseController implements DatabaseController {
         return false;
     }
 
-    @Override
     public boolean createMedicationCategory(String medicationCategoryName) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_MEDICATION_CATEGORY)) {
             preparedStatement.setString(1, medicationCategoryName);
@@ -106,16 +101,15 @@ public class MySQLDatabaseController implements DatabaseController {
         return false;
     }
 
-    @Override
     public MedicationCategory getMedicationCategoryByName(String medicationCategoryName) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_USERNAME)) {
             preparedStatement.setString(1, medicationCategoryName);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return MedicationCategory.add(
-                            resultSet.getInt("medicationCategoryId"),
-                            resultSet.getString("medicationCategoryName")
-                    );
+                    //return MedicationCategory.add(
+                    //        resultSet.getInt("medicationCategoryId"),
+                    //        resultSet.getString("medicationCategoryName")
+                    //);
                 }
             }
         } catch (SQLException e) {
@@ -124,7 +118,6 @@ public class MySQLDatabaseController implements DatabaseController {
         return null;
     }
 
-    @Override
     public void close() {
         try {
             if (connection != null && !connection.isClosed()) {

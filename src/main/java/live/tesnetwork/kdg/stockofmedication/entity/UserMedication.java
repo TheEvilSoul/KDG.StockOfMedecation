@@ -1,13 +1,9 @@
 package live.tesnetwork.kdg.stockofmedication.entity;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class UserMedication extends Medication {
 
-    private static final List<UserMedication> cache = new ArrayList<>();
 
     protected UserMedication(Medication medication) {
         super(medication.getName());
@@ -17,8 +13,14 @@ public class UserMedication extends Medication {
         return new UserMedication(medication);
     }
 
-    @Nullable
-    public static UserMedication get(String name) {
-        return cache.stream().filter(medication -> medication.getName().equals(name)).findFirst().orElse(null);
+    @Override
+    public Map<String, String> toMap() {
+        return Map.of(
+                "name", getName()
+        );
+    }
+
+    public static UserMedication fromMap(Map<String, String> map) {
+        return new UserMedication(Medication.fromMap(map));
     }
 }

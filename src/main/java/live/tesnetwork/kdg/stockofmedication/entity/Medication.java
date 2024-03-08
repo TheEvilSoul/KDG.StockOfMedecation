@@ -1,17 +1,19 @@
 package live.tesnetwork.kdg.stockofmedication.entity;
 
-import org.jetbrains.annotations.Nullable;
+import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class Medication {
-    private static final List<Medication> cache = new ArrayList<>();
+public class Medication implements Convertable {
 
     private String name;
 
-    protected Medication(String name) {
+    public Medication(String name) {
         this.name=name;
+    }
+
+    public static Medication fromMap(Map<String, String> map) {
+        return new Medication(map.get("name"));
     }
 
     public String getName() {
@@ -20,14 +22,14 @@ public class Medication {
 
 
     public static Medication create(String name) {
-        Medication medication = new Medication(name);
-        cache.add(medication);
-        return medication;
+        return new Medication(name);
 
     }
 
-    @Nullable
-    public static Medication get(String name) {
-        return cache.stream().filter(medication -> medication.getName().equals(name)).findFirst().orElse(null);
+    @Override
+    public Map<String, String> toMap() {
+        return Map.of(
+                "name", name
+        );
     }
 }

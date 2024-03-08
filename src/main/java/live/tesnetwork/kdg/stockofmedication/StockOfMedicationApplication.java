@@ -8,6 +8,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import live.tesnetwork.kdg.stockofmedication.entity.User;
 import live.tesnetwork.kdg.stockofmedication.enums.Views;
+import live.tesnetwork.kdg.stockofmedication.presenter.Presenter;
 import live.tesnetwork.kdg.stockofmedication.view.ErrorView;
 import live.tesnetwork.kdg.stockofmedication.view.LoginView;
 import live.tesnetwork.kdg.stockofmedication.view.MainMenuView;
@@ -17,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 public class StockOfMedicationApplication extends Application {
 
     private static Stage stage;
+
+    private static Presenter presenter = new Presenter();
 
     @Nullable
     private static User user;
@@ -51,6 +54,7 @@ public class StockOfMedicationApplication extends Application {
     public static <T extends Parent & ViewHelper> void setView(T view) {
         try {
             view.initialize();
+            presenter.addDataTo(view);
         } catch (Exception e) {
             setView(new ErrorView("view initialization", "An error occurred while initializing the view. Please try again."));
             return;

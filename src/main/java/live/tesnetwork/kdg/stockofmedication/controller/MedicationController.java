@@ -12,25 +12,15 @@ import java.util.Map;
 public class MedicationController {
     private static final DatabaseController databaseController = DatabaseController.getInstance();
     private static final Map<String, Medication> medicationCache = new HashMap<>();
-    private static final Map<String, MedicationCategory> medicationCategoryCache = new HashMap<>();
     private static final Map<String, UserMedication> userMedicationCache = new HashMap<>();
 
-    public static boolean createMedication(String name, String category) {
-        return databaseController.createMedication(name, category);
-    }
-
-    public static boolean createMedicationCategory(String name) {
-        return databaseController.createMedicationCategory(name);
+    public static boolean createMedication(Medication medication) {
+        return databaseController.createMedication(medication);
     }
 
     public static boolean deleteMedication(String name) {
         medicationCache.remove(name);
         return databaseController.deleteMedicationByName(name);
-    }
-
-    public static void deleteMedicationCategory(String name) {
-        medicationCategoryCache.remove(name);
-        databaseController.deleteMedicationCategoryByName(name);
     }
 
     @Nullable
@@ -49,25 +39,14 @@ public class MedicationController {
         return databaseController.getMedications();
     }
 
-    public static MedicationCategory getMedicationCategory(String name) {
-        MedicationCategory medicationCategory = medicationCategoryCache.getOrDefault(name, null);
-        if (medicationCategory == null) {
-            medicationCategory = databaseController.getMedicationCategoryByName(name);
-            if (medicationCategory != null) {
-                medicationCategoryCache.put(medicationCategory.getName(), medicationCategory);
-            }
-        }
-        return medicationCategory;
+    public static MedicationCategory[] getAllMedicationCategories() {
+        return MedicationCategory.values();
     }
 
-    public static List<MedicationCategory> getAllMedicationCategories() {
-        return databaseController.getAllMedicationCategories();
-    }
-
-    public static UserMedication getUserMedication(String name) {
+    public static UserMedication getUserMedication(String id, String name) {
         UserMedication userMedication = userMedicationCache.getOrDefault(name, null);
         if (userMedication == null) {
-            userMedication = databaseController.getUserMedication(name);
+            userMedication = databaseController.getUserMedication(id, name);
             if (userMedication != null) {
                 userMedicationCache.put(userMedication.getName(), userMedication);
             }
@@ -75,11 +54,11 @@ public class MedicationController {
         return userMedication;
     }
 
-    public static List<UserMedication> getUserMedications(Integer id) {
+    public static List<UserMedication> getUserMedications(String id) {
         return databaseController.getUserMedications(id);
     }
 
-    public static boolean updateUserMedication(Integer id, UserMedication userMedication) {
-        return databaseController.updateUserMedication(id, userMedication);
+    public static boolean saveUserMedication(String id, UserMedication userMedication) {
+        return databaseController.saveUserMedication(id, userMedication);
     }
 }

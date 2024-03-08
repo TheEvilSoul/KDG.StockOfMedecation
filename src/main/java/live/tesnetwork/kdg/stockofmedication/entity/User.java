@@ -1,19 +1,24 @@
 package live.tesnetwork.kdg.stockofmedication.entity;
 
-public class User {
-    private final Integer id;
+import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
+
+import java.util.Map;
+
+public class User implements Convertable {
     private final String username;
     private final String password;
 
 
-    public User(Integer id, String username, String password) {
-        this.id = id;
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public Integer getId() {
-        return id;
+    public static User fromMap(Map<String, String> map) {
+        return new User(
+                map.get("username"),
+                map.get("password")
+        );
     }
 
     public String getUsername() {
@@ -22,5 +27,13 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public Map<String, String> toMap() {
+        return Map.of(
+                "username", username,
+                "password", password
+        );
     }
 }
