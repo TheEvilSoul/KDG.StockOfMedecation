@@ -14,8 +14,8 @@ public class MedicationController {
     private static final Map<String, Medication> medicationCache = new HashMap<>();
     private static final Map<String, UserMedication> userMedicationCache = new HashMap<>();
 
-    public static boolean createMedication(Medication medication) {
-        return databaseController.createMedication(medication);
+    public static boolean saveMedication(Medication medication) {
+        return databaseController.saveMedication(medication);
     }
 
     public static boolean deleteMedication(String name) {
@@ -48,7 +48,7 @@ public class MedicationController {
         if (userMedication == null) {
             userMedication = databaseController.getUserMedication(id, name);
             if (userMedication != null) {
-                userMedicationCache.put(userMedication.getName(), userMedication);
+                userMedicationCache.put(userMedication.getMedication().getName(), userMedication);
             }
         }
         return userMedication;

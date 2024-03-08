@@ -14,7 +14,7 @@ public interface DatabaseController {
         return INSTANCE;
     }
 
-    boolean createMedication(Medication medication);
+    boolean saveMedication(Medication medication);
 
     boolean deleteMedicationByName(String name);
 

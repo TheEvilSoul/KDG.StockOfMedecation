@@ -6,14 +6,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import live.tesnetwork.kdg.stockofmedication.StockOfMedicationApplication;
 import live.tesnetwork.kdg.stockofmedication.entity.User;
 import live.tesnetwork.kdg.stockofmedication.logic.MainMenuViewHandler;
 import live.tesnetwork.kdg.stockofmedication.utils.Filter;
 
 
 public class MainMenuView extends StackPane implements ViewHelper {
-
-    private final User user;
     private Label categoryChoiceBoxLabel;
     private ChoiceBox<String> categoryChoiceBox;
     private Label textFieldShowOnlyMedicationBelowLabel;
@@ -23,9 +22,10 @@ public class MainMenuView extends StackPane implements ViewHelper {
     private ChoiceBox<String> choiceBoxShowOnlyMedicationToTakeIn;
     private Button buttonSearchMedication;
     private ListView<String> medicationListView;
+    private Button buttonAddMedication;
+    private Button buttonLogout;
 
-    public MainMenuView(User user) {
-        this.user = user;
+    public MainMenuView() {
         initialize();
     }
 
@@ -61,6 +61,13 @@ public class MainMenuView extends StackPane implements ViewHelper {
         this.medicationListView = new ListView<>();
 
         this.buttonSearchMedication = new Button("Search");
+        this.buttonAddMedication = new Button("Add new medication");
+        this.buttonAddMedication.setOnAction(MainMenuViewHandler::addMedication);
+        this.buttonLogout = new Button("Logout");
+        this.buttonLogout.setOnAction(MainMenuViewHandler::logout);
+        HBox buttonBox = new HBox();
+        buttonBox.setSpacing(10);
+        buttonBox.getChildren().addAll(this.buttonSearchMedication, this.buttonAddMedication, this.buttonLogout);
         this.buttonSearchMedication.setOnAction(this::updateListView);
 
         VBox container = new VBox();
@@ -68,7 +75,7 @@ public class MainMenuView extends StackPane implements ViewHelper {
                 categoryChoiceView,
                 stockLowerView,
                 takeInView,
-                this.buttonSearchMedication,
+                buttonBox,
                 this.medicationListView
         );
         container.setSpacing(10);
@@ -82,10 +89,6 @@ public class MainMenuView extends StackPane implements ViewHelper {
     }
     private void updateListView(ActionEvent actionEvent) {
         MainMenuViewHandler.search(this);
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public ChoiceBox<String> getCategoryChoiceBox() {

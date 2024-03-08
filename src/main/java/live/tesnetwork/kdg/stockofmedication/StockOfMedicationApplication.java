@@ -9,10 +9,7 @@ import javafx.stage.Stage;
 import live.tesnetwork.kdg.stockofmedication.entity.User;
 import live.tesnetwork.kdg.stockofmedication.enums.Views;
 import live.tesnetwork.kdg.stockofmedication.presenter.Presenter;
-import live.tesnetwork.kdg.stockofmedication.view.ErrorView;
-import live.tesnetwork.kdg.stockofmedication.view.LoginView;
-import live.tesnetwork.kdg.stockofmedication.view.MainMenuView;
-import live.tesnetwork.kdg.stockofmedication.view.ViewHelper;
+import live.tesnetwork.kdg.stockofmedication.view.*;
 import org.jetbrains.annotations.Nullable;
 
 public class StockOfMedicationApplication extends Application {
@@ -34,14 +31,12 @@ public class StockOfMedicationApplication extends Application {
     }
 
     public static void switchView(Views views) {
-        if (getUser() == null) views = Views.LOGIN;
+        if (user == null) views = Views.LOGIN;
         switch (views) {
-            case LOGIN:
-                setView(new LoginView());
-                break;
-            case MAIN:
-                setView(new MainMenuView(user));
-                break;
+            case LOGIN -> setView(new LoginView());
+            case MAIN -> setView(new MainMenuView());
+            case EDIT_USER_MEDICATION -> setView(new EditUserMedicationView());
+            case EDIT_MEDICATION -> setView(new EditMedicationView());
         }
     }
 
@@ -57,9 +52,9 @@ public class StockOfMedicationApplication extends Application {
             presenter.addDataTo(view);
         } catch (Exception e) {
             setView(new ErrorView("view initialization", "An error occurred while initializing the view. Please try again."));
+            e.printStackTrace();
             return;
         }
-
 
         // Creating a Scene and adding the view to it
         Scene scene = new Scene(view, view.getSceneWidth(), view.getSceneHeight());
@@ -72,6 +67,21 @@ public class StockOfMedicationApplication extends Application {
 
         // Showing the stage
         stage.show();
+    }
+
+    public static void givePopup(String name, String body) {
+        // Create an Alert window
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(stage);
+        alert.setTitle(name);
+        alert.setHeaderText(name);
+        alert.setContentText(body);
+
+        // Set the modality of the Alert window to APPLICATION_MODAL
+        alert.initModality(Modality.APPLICATION_MODAL);
+
+        // Show the Alert window
+        alert.showAndWait();
     }
 
     public static void giveError(String name, String body) {

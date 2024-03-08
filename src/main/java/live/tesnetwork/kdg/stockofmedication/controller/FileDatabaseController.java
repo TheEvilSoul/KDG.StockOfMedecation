@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
 public class FileDatabaseController implements DatabaseController {
@@ -32,8 +31,8 @@ public class FileDatabaseController implements DatabaseController {
     }
 
     @Override
-    public boolean createMedication(Medication medication) {
-        File file = getOrCreateFile(medicationPath, medication.getName());
+    public boolean saveMedication(Medication medication) {
+        File file = getOrCreateFile(medicationPath, medication.getFullName());
         return writeToFile(file, medication);
     }
 
@@ -50,8 +49,9 @@ public class FileDatabaseController implements DatabaseController {
 
     @Override
     public List<Medication> getMedications() {
-        Path path = Path.of(medicationPath);
-        return Arrays.stream(path.toFile().listFiles())
+        File path = new File(medicationPath);
+        if (!path.exists()) path.mkdirs();
+        return Arrays.stream(path.listFiles())
                 .map(this::readFromFile)
                 .filter(Medication.class::isInstance)
                 .map(Medication.class::cast)
@@ -77,7 +77,12 @@ public class FileDatabaseController implements DatabaseController {
 
     @Override
     public boolean saveUserMedication(String id, UserMedication userMedication) {
-        File file = getOrCreateFile(userMedicationPath + id, userMedication.getName());
+        File file = getOrCreateFile(userMedicationPath, id, userMedication.getMedication().getFullName());
+        System.out.println(userMedicationPath);
+        System.out.println(id);
+        System.out.println(userMedication.getMedication().getFullName());
+        System.out.println(file.getAbsolutePath());
+        System.out.println(userMedicationPath + id + userMedication.getMedication().getFullName());
         return writeToFile(file, userMedication);
     }
 
@@ -101,6 +106,10 @@ public class FileDatabaseController implements DatabaseController {
 
     public File getOrCreateFile(String path, String fileName) {
         return getOrCreateFile(path + fileName);
+    }
+
+    public File getOrCreateFile(String path, String path2, String fileName) {
+        return getOrCreateFile(path + path2 + "/" + fileName);
     }
 
     public File getOrCreateFile(String path, String fileName, boolean createIfNotExist) {

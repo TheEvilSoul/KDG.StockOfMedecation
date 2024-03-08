@@ -30,6 +30,11 @@ public class User implements Convertable {
     }
 
     @Override
+    public String getFullName() {
+        return getUsername();
+    }
+
+    @Override
     public Map<String, String> toMap() {
         return Map.of(
                 "username", username,

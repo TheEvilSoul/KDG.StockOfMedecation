@@ -9,6 +9,8 @@ import java.util.Map;
 public interface Convertable {
     Map<String, String> toMap();
 
+    String getFullName();
+
     static <T extends Convertable> T to(Map<String, String> map, Class<T> object) {
         switch (object.getSimpleName()) {
             case "Medication":

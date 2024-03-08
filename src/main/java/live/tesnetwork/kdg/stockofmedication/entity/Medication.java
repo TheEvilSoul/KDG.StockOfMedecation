@@ -6,30 +6,48 @@ import java.util.Map;
 
 public class Medication implements Convertable {
 
-    private String name;
+    private final String name;
+    private final MedicationCategory category;
 
-    public Medication(String name) {
+    private final Integer mg;
+
+    public Medication(String name, MedicationCategory category, Integer mg) {
         this.name=name;
+        this.category = category;
+        this.mg = mg;
     }
 
-    public static Medication fromMap(Map<String, String> map) {
-        return new Medication(map.get("name"));
+    public MedicationCategory getCategory() {
+        return category;
     }
 
     public String getName() {
         return name;
     }
 
+    @Override
+    public String getFullName() {
+        return "%s %d mg".formatted(name, mg);
+    }
 
-    public static Medication create(String name) {
-        return new Medication(name);
+    public Integer getMg() {
+        return mg;
+    }
 
+    public static Medication fromMap(Map<String, String> map) {
+        return new Medication(
+                map.get("name"),
+                MedicationCategory.valueOf(map.get("category")),
+                Integer.parseInt(map.get("mg"))
+        );
     }
 
     @Override
     public Map<String, String> toMap() {
         return Map.of(
-                "name", name
+                "name", name,
+                "category", category.name(),
+                "mg", mg.toString()
         );
     }
 }

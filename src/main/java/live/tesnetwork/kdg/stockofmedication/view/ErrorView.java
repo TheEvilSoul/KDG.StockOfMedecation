@@ -1,6 +1,7 @@
 package live.tesnetwork.kdg.stockofmedication.view;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 public class ErrorView extends Pane implements ViewHelper {
 
@@ -18,6 +19,7 @@ public class ErrorView extends Pane implements ViewHelper {
 
     @Override
     public void initialize() {
-
+        Text textArea = new Text(body);
+        getChildren().addAll(textArea);
     }
 }
