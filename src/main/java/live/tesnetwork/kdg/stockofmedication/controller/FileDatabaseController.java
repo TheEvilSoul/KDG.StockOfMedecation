@@ -3,6 +3,7 @@ package live.tesnetwork.kdg.stockofmedication.controller;
 import live.tesnetwork.kdg.stockofmedication.entity.Medication;
 import live.tesnetwork.kdg.stockofmedication.entity.User;
 import live.tesnetwork.kdg.stockofmedication.entity.UserMedication;
+import live.tesnetwork.kdg.stockofmedication.enums.TimeUnits;
 import live.tesnetwork.kdg.stockofmedication.utils.Config;
 import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
 import live.tesnetwork.kdg.stockofmedication.utils.EncryptionHelper;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class FileDatabaseController implements DatabaseController {
@@ -37,14 +39,15 @@ public class FileDatabaseController implements DatabaseController {
     }
 
     @Override
-    public boolean deleteMedicationByName(String name) {
-        File file = new File(medicationPath + name);
-        return file.delete();
+    public boolean deleteMedication(String name) {
+        File file = getOrCreateFile(medicationPath, name, false);
+        if (file.exists()) return file.delete();
+        return true;
     }
 
     @Override
-    public Medication getMedicationByName(String name) {
-        return readFromFile(getOrCreateFile(medicationPath, name));
+    public Medication getMedication(String name) {
+        return readFromFile(getOrCreateFile(medicationPath, name, false));
     }
 
     @Override
@@ -60,7 +63,7 @@ public class FileDatabaseController implements DatabaseController {
 
     @Override
     public UserMedication getUserMedication(String id, String name) {
-        return readFromFile(getOrCreateFile(userMedicationPath + id, name));
+        return readFromFile(getOrCreateFile(userMedicationPath, id, name, false));
     }
 
     @Override
@@ -86,6 +89,12 @@ public class FileDatabaseController implements DatabaseController {
         return writeToFile(file, userMedication);
     }
 
+    public boolean deleteUserMedication(String id, UserMedication userMedication) {
+        File file = getOrCreateFile(userMedicationPath, id, userMedication.getMedication().getFullName(), false);
+        if (file.exists()) return file.delete();
+        return true;
+    }
+
     @Override
     public void close() {
 
@@ -100,8 +109,15 @@ public class FileDatabaseController implements DatabaseController {
 
     @Override
     public boolean createUser(String username, String password) {
-        File file = getOrCreateFile(userPath, username);
-        return writeToFile(file, new User(username, EncryptionHelper.hashPassword(password)));
+        try {
+            File file = getOrCreateFile(userPath, username, false);
+            if (file.exists()) return false;
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            return writeToFile(file, new User(username, EncryptionHelper.hashPassword(password)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public File getOrCreateFile(String path, String fileName) {
@@ -112,6 +128,10 @@ public class FileDatabaseController implements DatabaseController {
         return getOrCreateFile(path + path2 + "/" + fileName);
     }
 
+    public File getOrCreateFile(String path, String path2, String fileName, boolean createIfNotExist) {
+        return getOrCreateFile(path + path2 + "/" + fileName, createIfNotExist);
+    }
+
     public File getOrCreateFile(String path, String fileName, boolean createIfNotExist) {
         return getOrCreateFile(path + fileName, createIfNotExist);
     }
@@ -119,6 +139,7 @@ public class FileDatabaseController implements DatabaseController {
     public File getOrCreateFile(String path) {
         return getOrCreateFile(path, true);
     }
+
     public File getOrCreateFile(String path, boolean createIfNotExist) {
         File file = new File(path);
         if (!file.exists() && createIfNotExist) {
@@ -140,7 +161,7 @@ public class FileDatabaseController implements DatabaseController {
             writer.write("@%s\n".formatted(convertable.getClass().getSimpleName()));
             convertable.toMap().forEach((key, value) -> {
                 try {
-                    writer.write("%s:%s\n".formatted(key, escapeSpecialCharacters(value)));
+                    writer.write("%s;%s\n".formatted(key, escapeSpecialCharacters(value)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -186,7 +207,7 @@ public class FileDatabaseController implements DatabaseController {
             while (scanner.hasNext()) {
                 String fileContents = scanner.next();
                 if (!fileContents.startsWith("@")) {
-                    String[] v = fileContents.split(":");
+                    String[] v = fileContents.split(";");
                     map.put(v[0], v[1]);
                 }
             }
@@ -201,5 +222,30 @@ public class FileDatabaseController implements DatabaseController {
 
     private String escapeSpecialCharacters(String str) {
         return str.replace("\\", "\\\\").replace("\n", "\\n").replace("\r", "\\r");
+    }
+
+    @Override
+    public void updateStockFromTakeIn(String id, boolean canGoNegative) {
+        LocalDateTime now = LocalDateTime.now();
+        List<UserMedication> userMedications = getUserMedications(id)
+                .stream()
+                .filter(userMedication -> userMedication.getAmountPerTimeUnit() > 0)
+                .filter(userMedication -> userMedication.getAmountOfTimeUnit() > 0)
+                .filter(userMedication -> userMedication.getTimeUnit() != null)
+                .toList();
+        for (UserMedication userMedication : userMedications) {
+            TimeUnits timeUnit = userMedication.getTimeUnit();
+            LocalDateTime lastTaken = userMedication.getLastTaken()
+                    .plus(userMedication.getAmountOfTimeUnit(), timeUnit.getUnit());
+            while (lastTaken.isBefore(now)) {
+                Integer amount = userMedication.getAmountPerTimeUnit();
+                if (canGoNegative || userMedication.getStock() - amount >= 0) {
+                    userMedication.setStock(userMedication.getStock() - amount);
+                    userMedication.setLastTaken(lastTaken);
+                    lastTaken = lastTaken.plus(userMedication.getAmountOfTimeUnit(), timeUnit.getUnit());
+                } else break;
+            }
+            saveUserMedication(id, userMedication);
+        }
     }
 }

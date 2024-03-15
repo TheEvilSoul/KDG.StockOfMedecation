@@ -6,8 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import live.tesnetwork.kdg.stockofmedication.StockOfMedicationApplication;
-import live.tesnetwork.kdg.stockofmedication.entity.User;
 import live.tesnetwork.kdg.stockofmedication.logic.MainMenuViewHandler;
 import live.tesnetwork.kdg.stockofmedication.utils.Filter;
 
@@ -24,6 +22,7 @@ public class MainMenuView extends StackPane implements ViewHelper {
     private ListView<String> medicationListView;
     private Button buttonAddMedication;
     private Button buttonLogout;
+    private Button buttonToggleMedicationObject;
 
     public MainMenuView() {
         initialize();
@@ -59,15 +58,27 @@ public class MainMenuView extends StackPane implements ViewHelper {
 
 
         this.medicationListView = new ListView<>();
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem editMenuItem = new MenuItem("Edit");
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        contextMenu.getItems().addAll(editMenuItem, deleteMenuItem);
+
+        editMenuItem.setOnAction(v -> MainMenuViewHandler.editMedication(this));
+        deleteMenuItem.setOnAction(v -> MainMenuViewHandler.deleteMedication(this));
+        this.medicationListView.setOnContextMenuRequested(event -> {
+            contextMenu.show(this.medicationListView, event.getScreenX(), event.getScreenY());
+        });
 
         this.buttonSearchMedication = new Button("Search");
         this.buttonAddMedication = new Button("Add new medication");
         this.buttonAddMedication.setOnAction(MainMenuViewHandler::addMedication);
         this.buttonLogout = new Button("Logout");
         this.buttonLogout.setOnAction(MainMenuViewHandler::logout);
+        this.buttonToggleMedicationObject = new Button("Show Medication");
+        this.buttonToggleMedicationObject.setOnAction(v -> MainMenuViewHandler.toggleMedicationObject(this));
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);
-        buttonBox.getChildren().addAll(this.buttonSearchMedication, this.buttonAddMedication, this.buttonLogout);
+        buttonBox.getChildren().addAll(this.buttonSearchMedication, this.buttonAddMedication, this.buttonLogout, this.buttonToggleMedicationObject);
         this.buttonSearchMedication.setOnAction(this::updateListView);
 
         VBox container = new VBox();
@@ -82,15 +93,17 @@ public class MainMenuView extends StackPane implements ViewHelper {
         container.setPadding(new Insets(10));
 
         getChildren().add(container);
-        this.updateListView();
     }
-    private void updateListView() {
+    public void updateListView() {
         updateListView(null);
     }
     private void updateListView(ActionEvent actionEvent) {
         MainMenuViewHandler.search(this);
     }
 
+    public Button getButtonToggleMedicationObject() {
+        return buttonToggleMedicationObject;
+    }
     public ChoiceBox<String> getCategoryChoiceBox() {
         return categoryChoiceBox;
     }

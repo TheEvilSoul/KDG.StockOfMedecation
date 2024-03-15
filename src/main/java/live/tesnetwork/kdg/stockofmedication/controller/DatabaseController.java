@@ -16,9 +16,9 @@ public interface DatabaseController {
 
     boolean saveMedication(Medication medication);
 
-    boolean deleteMedicationByName(String name);
+    boolean deleteMedication(String name);
 
-    Medication getMedicationByName(String name);
+    Medication getMedication(String name);
 
     List<Medication> getMedications();
 
@@ -27,10 +27,13 @@ public interface DatabaseController {
     List<UserMedication> getUserMedications(String id);
 
     boolean saveUserMedication(String id, UserMedication userMedication);
+    boolean deleteUserMedication(String id, UserMedication userMedication);
 
     void close();
 
     User getUserByUsername(String username);
 
     boolean createUser(String username, String password);
+
+    void updateStockFromTakeIn(String id, boolean canGoNegative);
 }

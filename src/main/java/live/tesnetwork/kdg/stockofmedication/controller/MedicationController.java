@@ -20,14 +20,14 @@ public class MedicationController {
 
     public static boolean deleteMedication(String name) {
         medicationCache.remove(name);
-        return databaseController.deleteMedicationByName(name);
+        return databaseController.deleteMedication(name);
     }
 
     @Nullable
     public static Medication getMedication(String name) {
         Medication medication = medicationCache.getOrDefault(name, null);
         if (medication == null) {
-            medication = databaseController.getMedicationByName(name);
+            medication = databaseController.getMedication(name);
             if (medication != null) {
                 medicationCache.put(medication.getName(), medication);
             }
@@ -60,5 +60,13 @@ public class MedicationController {
 
     public static boolean saveUserMedication(String id, UserMedication userMedication) {
         return databaseController.saveUserMedication(id, userMedication);
+    }
+
+    public static void deleteUserMedication(String Id, UserMedication userMedication) {
+        databaseController.deleteUserMedication(Id, userMedication);
+    }
+
+    public static void updateStockFromTakeIn(String id, boolean canGoNegative) {
+        databaseController.updateStockFromTakeIn(id, canGoNegative);
     }
 }

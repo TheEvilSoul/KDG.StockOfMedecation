@@ -22,6 +22,7 @@ public class EditMedicationViewHandler {
         String name = view.getMedicationNameTextField().getText();
         String cat = view.getMedicationCategoryChoiceBox().getValue();
         String mgText = view.getMedicationMgTextField().getText();
+        String recommendedDose = view.getMedicationRecommendedDoseTextField().getText();
         if (mgText != null && !mgText.isEmpty()) {
             mg = Integer.parseInt(mgText);
         }
@@ -29,7 +30,7 @@ public class EditMedicationViewHandler {
         if (name.isEmpty() || cat.isEmpty() || cat.equals("Select a category")) {
             StockOfMedicationApplication.giveError("Empty fields", "Please fill in all fields.");
         } else {
-            Medication medication = new Medication(name, MedicationCategory.valueOf(cat), mg);
+            Medication medication = new Medication(name, MedicationCategory.valueOf(cat), mg, recommendedDose);
             if (MedicationController.saveMedication(medication)) {
                 StockOfMedicationApplication.givePopup("Success", "The medication has been saved successfully.");
             } else {

@@ -10,8 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import live.tesnetwork.kdg.stockofmedication.logic.EditMedicationViewHandler;
 import live.tesnetwork.kdg.stockofmedication.logic.EditUserMedicationViewHandler;
-
-import javax.swing.*;
+import live.tesnetwork.kdg.stockofmedication.utils.Filter;
 
 public class EditMedicationView extends StackPane implements ViewHelper {
     private Label medicationObjectLabel;
@@ -24,6 +23,8 @@ public class EditMedicationView extends StackPane implements ViewHelper {
     private ChoiceBox<String> medicationCategoryChoiceBox;
     private Label medicationMgLabel;
     private TextField medicationMgTextField;
+    private TextField medicationRecommendedDoseTextField;
+    private Label medicationRecommendedDoseLabel;
 
     @Override
     public String getTitle() {
@@ -52,8 +53,14 @@ public class EditMedicationView extends StackPane implements ViewHelper {
 
         this.medicationMgLabel = new Label("Medication mg:");
         this.medicationMgTextField = new TextField();
+        this.medicationMgTextField.setTextFormatter(Filter.OnlyAllowNumbers());
         VBox medicationMgContainer = new VBox();
         medicationMgContainer.getChildren().addAll(this.medicationMgLabel, this.medicationMgTextField);
+        
+        this.medicationRecommendedDoseLabel = new Label("Recommended dose:");
+        this.medicationRecommendedDoseTextField = new TextField();
+        VBox medicationRecommendedDoseContainer = new VBox();
+        medicationRecommendedDoseContainer.getChildren().addAll(this.medicationRecommendedDoseLabel, this.medicationRecommendedDoseTextField);
 
         VBox medicationCategoryContainer = new VBox();
         medicationCategoryContainer.getChildren().addAll(this.medicationCategoryLabel, this.medicationCategoryChoiceBox);
@@ -73,6 +80,7 @@ public class EditMedicationView extends StackPane implements ViewHelper {
                 medicationCategoryContainer,
                 medicationNameContainer,
                 medicationMgContainer,
+                medicationRecommendedDoseContainer,
                 buttonContainer
         );
         container.setSpacing(10);
@@ -97,5 +105,9 @@ public class EditMedicationView extends StackPane implements ViewHelper {
 
     public TextField getMedicationMgTextField() {
         return medicationMgTextField;
+    }
+
+    public TextField getMedicationRecommendedDoseTextField() {
+        return medicationRecommendedDoseTextField;
     }
 }

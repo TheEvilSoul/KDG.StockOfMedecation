@@ -6,23 +6,27 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import live.tesnetwork.kdg.stockofmedication.controller.MedicationController;
 import live.tesnetwork.kdg.stockofmedication.entity.User;
 import live.tesnetwork.kdg.stockofmedication.enums.Views;
 import live.tesnetwork.kdg.stockofmedication.presenter.Presenter;
+import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
 import live.tesnetwork.kdg.stockofmedication.view.*;
 import org.jetbrains.annotations.Nullable;
 
 public class StockOfMedicationApplication extends Application {
-
     private static Stage stage;
-
     private static Presenter presenter = new Presenter();
-
     @Nullable
     private static User user;
+    private static boolean canGoNegative = false;
 
     public static void setUser(User user) {
         StockOfMedicationApplication.user = user;
+    }
+
+    public static void setCanGoNegative(boolean canGoNegative) {
+        StockOfMedicationApplication.canGoNegative = canGoNegative;
     }
 
     @Nullable
@@ -31,12 +35,15 @@ public class StockOfMedicationApplication extends Application {
     }
 
     public static void switchView(Views views) {
+        switchView(views, null);
+    }
+    public static void switchView(Views views, Convertable data) {
         if (user == null) views = Views.LOGIN;
         switch (views) {
-            case LOGIN -> setView(new LoginView());
-            case MAIN -> setView(new MainMenuView());
-            case EDIT_USER_MEDICATION -> setView(new EditUserMedicationView());
-            case EDIT_MEDICATION -> setView(new EditMedicationView());
+            case LOGIN -> setView(new LoginView(), data);
+            case MAIN -> setView(new MainMenuView(), data);
+            case EDIT_USER_MEDICATION -> setView(new EditUserMedicationView(), data);
+            case EDIT_MEDICATION -> setView(new EditMedicationView(), data);
         }
     }
 
@@ -46,10 +53,19 @@ public class StockOfMedicationApplication extends Application {
         this.setView(new LoginView());
     }
 
+    public static void updateMedicationStockWithLastTaken() {
+        MedicationController.updateStockFromTakeIn(user.getUsername(), canGoNegative);
+    }
+
+
+
     public static <T extends Parent & ViewHelper> void setView(T view) {
+        setView(view, null);
+    }
+    public static <T extends Parent & ViewHelper> void setView(T view, Convertable data) {
         try {
             view.initialize();
-            presenter.addDataTo(view);
+            presenter.addDataTo(view, data);
         } catch (Exception e) {
             setView(new ErrorView("view initialization", "An error occurred while initializing the view. Please try again."));
             e.printStackTrace();

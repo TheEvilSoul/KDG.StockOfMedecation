@@ -8,13 +8,14 @@ public class Medication implements Convertable {
 
     private final String name;
     private final MedicationCategory category;
-
     private final Integer mg;
+    private final String recommendedDosage;
 
-    public Medication(String name, MedicationCategory category, Integer mg) {
+    public Medication(String name, MedicationCategory category, Integer mg, String recommendedDosage) {
         this.name=name;
         this.category = category;
         this.mg = mg;
+        this.recommendedDosage = recommendedDosage;
     }
 
     public MedicationCategory getCategory() {
@@ -34,11 +35,17 @@ public class Medication implements Convertable {
         return mg;
     }
 
+
+    public String getRecommendedDosage() {
+        return recommendedDosage;
+    }
+
     public static Medication fromMap(Map<String, String> map) {
         return new Medication(
                 map.get("name"),
                 MedicationCategory.valueOf(map.get("category")),
-                Integer.parseInt(map.get("mg"))
+                Integer.parseInt(map.get("mg")),
+                map.get("recommendedDosage")
         );
     }
 
@@ -47,7 +54,8 @@ public class Medication implements Convertable {
         return Map.of(
                 "name", name,
                 "category", category.name(),
-                "mg", mg.toString()
+                "mg", mg.toString(),
+                "recommendedDosage", recommendedDosage
         );
     }
 }
