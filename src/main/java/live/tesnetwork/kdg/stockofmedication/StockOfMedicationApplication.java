@@ -57,7 +57,9 @@ public class StockOfMedicationApplication extends Application {
         MedicationController.updateStockFromTakeIn(user.getUsername(), canGoNegative);
     }
 
-
+    public static void setTitle(String title) {
+        stage.setTitle(title);
+    }
 
     public static <T extends Parent & ViewHelper> void setView(T view) {
         setView(view, null);

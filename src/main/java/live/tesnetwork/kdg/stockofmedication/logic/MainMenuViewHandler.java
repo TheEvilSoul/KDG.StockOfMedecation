@@ -101,22 +101,14 @@ public class MainMenuViewHandler {
             view.getButtonToggleMedicationObject().setText("Show UserMedication");
             view.getTextFieldShowOnlyMedicationBelow().setDisable(true);
             view.getTextFieldShowOnlyMedicationToTakeIn().setDisable(true);
-            view.setMedicationList(
-                    MedicationController.getMedications()
-                            .stream()
-                            .map(Medication::getFullName)
-                            .toArray(String[]::new)
-            );
+            StockOfMedicationApplication.setTitle("Medication view");
+            search(view);
         } else {
             view.getButtonToggleMedicationObject().setText("Show Medication");
             view.getTextFieldShowOnlyMedicationBelow().setDisable(false);
             view.getTextFieldShowOnlyMedicationToTakeIn().setDisable(false);
-            view.setMedicationList(
-                    MedicationController.getUserMedications(StockOfMedicationApplication.getUser().getUsername())
-                            .stream()
-                            .map(UserMedication::getDetails)
-                            .toArray(String[]::new)
-            );
+            StockOfMedicationApplication.setTitle("UserMedication view");
+            search(view);
         }
     }
 }

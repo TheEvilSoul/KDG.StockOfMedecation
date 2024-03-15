@@ -2,13 +2,9 @@ package live.tesnetwork.kdg.stockofmedication.view;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import live.tesnetwork.kdg.stockofmedication.logic.EditUserMedicationViewHandler;
 import live.tesnetwork.kdg.stockofmedication.utils.Filter;
-
-import javax.swing.*;
 
 public class EditUserMedicationView extends StackPane implements ViewHelper {
     private Label medicationObjectLabel;
@@ -23,7 +19,6 @@ public class EditUserMedicationView extends StackPane implements ViewHelper {
     private ChoiceBox<String> medicationTimeUnitChoiceBox;
     private Label medicationAmountPerTimeUnitLabel;
     private TextField medicationAmountPerTimeUnitTextField;
-    private Label medicationAmountOfTimeUnitLabel;
     private TextField medicationAmountOfTimeUnitTextField;
     private Label medicationUpdateToNowLabel;
     private CheckBox medicationUpdateToNowCheckBox;
@@ -44,6 +39,14 @@ public class EditUserMedicationView extends StackPane implements ViewHelper {
         medicationObjectContainer.setSpacing(10);
         medicationObjectContainer.getChildren().addAll(medicationObjectLabel, medicationObjectChoiceBox);
 
+        this.goBackButton = new Button("Go back");
+        this.goBackButton.setOnAction(EditUserMedicationViewHandler::goBack);
+
+        HBox topBar = new HBox();
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        topBar.getChildren().addAll(medicationObjectContainer, spacer, this.goBackButton);
+
         this.medicationNameLabel = new Label("Medication name");
         this.medicationNameChoiceBox = new ChoiceBox<>();
         this.medicationNameChoiceBox.setMinWidth(150);
@@ -59,25 +62,22 @@ public class EditUserMedicationView extends StackPane implements ViewHelper {
         VBox medicationStockContainer = new VBox();
         medicationStockContainer.getChildren().addAll(this.medicationStockLabel, this.medicationStockTextField);
 
-        this.medicationTimeUnitLabel = new Label("Medication time unit");
+        this.medicationTimeUnitLabel = new Label("Amount of time between taking this medication:");
         this.medicationTimeUnitChoiceBox = new ChoiceBox<>();
+        this.medicationAmountOfTimeUnitTextField = new TextField();
+        this.medicationAmountOfTimeUnitTextField.setTextFormatter(Filter.OnlyAllowNumbers());
 
         this.medicationAmountPerTimeUnitLabel = new Label("Amount to take");
         this.medicationAmountPerTimeUnitTextField = new TextField();
         this.medicationAmountPerTimeUnitTextField.setTextFormatter(Filter.OnlyAllowNumbers());
 
         VBox medicationTimeUnitContainer = new VBox();
-        medicationTimeUnitContainer.getChildren().addAll(this.medicationTimeUnitLabel, this.medicationTimeUnitChoiceBox);
+        HBox medicationTimeUnitInput = new HBox();
+        medicationTimeUnitInput.getChildren().addAll(this.medicationAmountOfTimeUnitTextField, this.medicationTimeUnitChoiceBox);
+        medicationTimeUnitContainer.getChildren().addAll(this.medicationTimeUnitLabel, medicationTimeUnitInput);
 
         VBox medicationAmountPerTimeUnitContainer = new VBox();
         medicationAmountPerTimeUnitContainer.getChildren().addAll(this.medicationAmountPerTimeUnitLabel, this.medicationAmountPerTimeUnitTextField);
-
-        this.medicationAmountOfTimeUnitLabel = new Label("Amount of time unit");
-        this.medicationAmountOfTimeUnitTextField = new TextField();
-        this.medicationAmountOfTimeUnitTextField.setTextFormatter(Filter.OnlyAllowNumbers());
-
-        VBox medicationAmountOfTimeUnitContainer = new VBox();
-        medicationAmountOfTimeUnitContainer.getChildren().addAll(this.medicationAmountOfTimeUnitLabel, this.medicationAmountOfTimeUnitTextField);
 
         this.medicationUpdateToNowLabel = new Label(" Update last taken to now?");
         this.medicationUpdateToNowCheckBox = new CheckBox();
@@ -88,23 +88,16 @@ public class EditUserMedicationView extends StackPane implements ViewHelper {
 
         this.saveButton = new Button("Save");
         this.saveButton.setOnAction(v -> EditUserMedicationViewHandler.save(this));
-        this.goBackButton = new Button("Go back");
-        this.goBackButton.setOnAction(EditUserMedicationViewHandler::goBack);
-
-        HBox buttonContainer = new HBox();
-        buttonContainer.setSpacing(10);
-        buttonContainer.getChildren().addAll(saveButton, goBackButton);
 
         VBox container = new VBox();
         container.getChildren().addAll(
-                medicationObjectContainer,
+                topBar,
                 medicationNameContainer,
                 medicationStockContainer,
                 medicationTimeUnitContainer,
                 medicationAmountPerTimeUnitContainer,
-                medicationAmountOfTimeUnitContainer,
                 medicationUpdateToNowContainer,
-                buttonContainer
+                saveButton
         );
         container.setSpacing(10);
         container.setPadding(new Insets(10));

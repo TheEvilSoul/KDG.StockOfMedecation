@@ -5,9 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import live.tesnetwork.kdg.stockofmedication.logic.EditMedicationViewHandler;
 import live.tesnetwork.kdg.stockofmedication.logic.EditUserMedicationViewHandler;
 import live.tesnetwork.kdg.stockofmedication.utils.Filter;
@@ -42,6 +40,13 @@ public class EditMedicationView extends StackPane implements ViewHelper {
         medicationObjectContainer.setSpacing(10);
         medicationObjectContainer.getChildren().addAll(medicationObjectLabel, medicationObjectChoiceBox);
 
+        this.goBackButton = new Button("Go back");
+        this.goBackButton.setOnAction(EditUserMedicationViewHandler::goBack);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox topBar = new HBox();
+        topBar.getChildren().addAll(medicationObjectContainer, spacer, this.goBackButton);
+
         this.medicationCategoryLabel = new Label("Medication category");
         this.medicationCategoryChoiceBox = new ChoiceBox<>();
 
@@ -67,21 +72,15 @@ public class EditMedicationView extends StackPane implements ViewHelper {
 
         this.saveButton = new Button("Save");
         this.saveButton.setOnAction(v -> EditMedicationViewHandler.save(this));
-        this.goBackButton = new Button("Go back");
-        this.goBackButton.setOnAction(EditUserMedicationViewHandler::goBack);
-
-        HBox buttonContainer = new HBox();
-        buttonContainer.setSpacing(10);
-        buttonContainer.getChildren().addAll(saveButton, goBackButton);
 
         VBox container = new VBox();
         container.getChildren().addAll(
-                medicationObjectContainer,
+                topBar,
                 medicationCategoryContainer,
                 medicationNameContainer,
                 medicationMgContainer,
                 medicationRecommendedDoseContainer,
-                buttonContainer
+                saveButton
         );
         container.setSpacing(10);
         container.setPadding(new Insets(10));

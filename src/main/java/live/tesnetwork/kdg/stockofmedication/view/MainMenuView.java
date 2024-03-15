@@ -3,9 +3,7 @@ package live.tesnetwork.kdg.stockofmedication.view;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import live.tesnetwork.kdg.stockofmedication.logic.MainMenuViewHandler;
 import live.tesnetwork.kdg.stockofmedication.utils.Filter;
 
@@ -33,13 +31,16 @@ public class MainMenuView extends StackPane implements ViewHelper {
         this.buttonLogout = new Button("Logout");
         this.categoryChoiceBoxLabel = new Label("Category:");
         this.categoryChoiceBox = new ChoiceBox<>();
+        //this.categoryChoiceBox.setOnAction(v ->  MainMenuViewHandler.search(this));
 
         HBox categoryChoiceView = new HBox();
         categoryChoiceView.setSpacing(10);
         categoryChoiceView.getChildren().addAll(this.categoryChoiceBoxLabel, this.categoryChoiceBox);
 
         HBox topBar = new HBox();
-        topBar.getChildren().addAll(categoryChoiceView, this.buttonLogout);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        topBar.getChildren().addAll(categoryChoiceView, spacer, this.buttonLogout);
 
         this.textFieldShowOnlyMedicationBelowLabel = new Label("Show only medication with stock lower than:");
         this.textFieldShowOnlyMedicationBelow = new TextField();
@@ -60,6 +61,12 @@ public class MainMenuView extends StackPane implements ViewHelper {
         takeInTimeView.getChildren().addAll(this.textFieldShowOnlyMedicationToTakeIn, this.choiceBoxShowOnlyMedicationToTakeIn);
         takeInView.getChildren().addAll(this.textFieldShowOnlyMedicationToTakeInLabel, takeInTimeView);
 
+        this.buttonAddMedication = new Button("Add new medication");
+        HBox middleBar = new HBox();
+        Region spacer1 = new Region();
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+        middleBar.getChildren().addAll(takeInTimeView, spacer1, this.buttonAddMedication);
+
 
         this.medicationListView = new ListView<>();
         ContextMenu contextMenu = new ContextMenu();
@@ -74,21 +81,22 @@ public class MainMenuView extends StackPane implements ViewHelper {
         });
 
         this.buttonSearchMedication = new Button("Search");
-        this.buttonAddMedication = new Button("Add new medication");
         this.buttonAddMedication.setOnAction(MainMenuViewHandler::addMedication);
         this.buttonLogout.setOnAction(MainMenuViewHandler::logout);
         this.buttonToggleMedicationObject = new Button("Show Medication");
         this.buttonToggleMedicationObject.setOnAction(v -> MainMenuViewHandler.toggleMedicationObject(this));
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);
-        buttonBox.getChildren().addAll(this.buttonSearchMedication, this.buttonAddMedication, this.buttonLogout, this.buttonToggleMedicationObject);
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+        buttonBox.getChildren().addAll(this.buttonSearchMedication, spacer2, this.buttonToggleMedicationObject);
         this.buttonSearchMedication.setOnAction(this::updateListView);
 
         VBox container = new VBox();
         container.getChildren().addAll(
                 topBar,
                 stockLowerView,
-                takeInView,
+                middleBar,
                 buttonBox,
                 this.medicationListView
         );
@@ -133,7 +141,7 @@ public class MainMenuView extends StackPane implements ViewHelper {
 
     @Override
     public String getTitle() {
-        return "Main Menu";
+        return "UserMedication view";
     }
 
     public void setMedicationList(String[] array) {
