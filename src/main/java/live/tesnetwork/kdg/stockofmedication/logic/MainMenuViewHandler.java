@@ -1,6 +1,7 @@
 package live.tesnetwork.kdg.stockofmedication.logic;
 
 import javafx.event.ActionEvent;
+import javafx.scene.control.ChoiceBox;
 import live.tesnetwork.kdg.stockofmedication.StockOfMedicationApplication;
 import live.tesnetwork.kdg.stockofmedication.controller.MedicationController;
 import live.tesnetwork.kdg.stockofmedication.entity.Medication;
@@ -17,14 +18,18 @@ public class MainMenuViewHandler {
     public static void search(MainMenuView view) {
         Integer stock = -1;
         Integer time;
-        MedicationCategory cat = MedicationCategory.valueOf(view.getCategoryChoiceBox().getSelectionModel().getSelectedItem());
+        String catT = view.getCategoryChoiceBox().getSelectionModel().getSelectedItem();
+        if (catT == null || catT.isEmpty()) catT = "ALL";
+        MedicationCategory cat = MedicationCategory.valueOf(catT);
         String stockT = view.getTextFieldShowOnlyMedicationBelow().getText();
         if (!stockT.isEmpty()) {
             stock = Integer.parseInt(stockT);
             if (stock < -1) stock = -1;
         }
         String timeT = view.getTextFieldShowOnlyMedicationToTakeIn().getText();
-        TimeUnits timeUnit = TimeUnits.valueOf(view.getChoiceBoxShowOnlyMedicationToTakeIn().getValue());
+        String timeUnitT = view.getChoiceBoxShowOnlyMedicationToTakeIn().getValue();
+        if (timeUnitT == null || timeUnitT.isEmpty()) timeUnitT = "HOURS";
+        TimeUnits timeUnit = TimeUnits.valueOf(timeUnitT);
         if (!timeT.isEmpty()) time = Integer.parseInt(timeT);
         else {
             time = -1;
@@ -102,12 +107,16 @@ public class MainMenuViewHandler {
             view.getTextFieldShowOnlyMedicationBelow().setDisable(true);
             view.getTextFieldShowOnlyMedicationToTakeIn().setDisable(true);
             StockOfMedicationApplication.setTitle("Medication view");
+            view.getMedicationListLabel().setText("Medication list:");
+            view.getMedicationListView().setStyle("-fx-background-color: red;");
             search(view);
         } else {
             view.getButtonToggleMedicationObject().setText("Show Medication");
             view.getTextFieldShowOnlyMedicationBelow().setDisable(false);
             view.getTextFieldShowOnlyMedicationToTakeIn().setDisable(false);
-            StockOfMedicationApplication.setTitle("UserMedication view");
+            StockOfMedicationApplication.setTitle("User medication view");
+            view.getMedicationListLabel().setText("User medication list:");
+            view.getMedicationListView().setStyle("-fx-background-color: blue;");
             search(view);
         }
     }

@@ -8,6 +8,7 @@ import live.tesnetwork.kdg.stockofmedication.entity.MedicationCategory;
 import live.tesnetwork.kdg.stockofmedication.entity.User;
 import live.tesnetwork.kdg.stockofmedication.entity.UserMedication;
 import live.tesnetwork.kdg.stockofmedication.enums.TimeUnits;
+import live.tesnetwork.kdg.stockofmedication.logic.MainMenuViewHandler;
 import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
 import live.tesnetwork.kdg.stockofmedication.view.EditMedicationView;
 import live.tesnetwork.kdg.stockofmedication.view.EditUserMedicationView;
@@ -46,6 +47,7 @@ public class Presenter {
         );
         mainMenuView.setTimeChoices(Arrays.stream(TimeUnits.values()).map(TimeUnits::toString).toArray(String[]::new));
         mainMenuView.updateListView();
+        MainMenuViewHandler.toggleMedicationObject(mainMenuView);
         return mainMenuView;
     }
 

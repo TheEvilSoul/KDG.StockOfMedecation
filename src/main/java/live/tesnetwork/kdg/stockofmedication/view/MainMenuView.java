@@ -21,6 +21,7 @@ public class MainMenuView extends StackPane implements ViewHelper {
     private Button buttonAddMedication;
     private Button buttonLogout;
     private Button buttonToggleMedicationObject;
+    private Label medicationListLabel;
 
     public MainMenuView() {
         initialize();
@@ -29,9 +30,10 @@ public class MainMenuView extends StackPane implements ViewHelper {
     @Override
     public void initialize() {
         this.buttonLogout = new Button("Logout");
+        this.buttonLogout.setStyle("-fx-background-color: red;");
         this.categoryChoiceBoxLabel = new Label("Category:");
         this.categoryChoiceBox = new ChoiceBox<>();
-        //this.categoryChoiceBox.setOnAction(v ->  MainMenuViewHandler.search(this));
+        this.categoryChoiceBox.setOnAction(v ->  MainMenuViewHandler.search(this));
 
         HBox categoryChoiceView = new HBox();
         categoryChoiceView.setSpacing(10);
@@ -55,17 +57,14 @@ public class MainMenuView extends StackPane implements ViewHelper {
 
         this.choiceBoxShowOnlyMedicationToTakeIn = new ChoiceBox<>();
 
-        VBox takeInView = new VBox();
+        VBox middleBar = new VBox();
         HBox takeInTimeView = new HBox();
         takeInTimeView.setSpacing(10);
-        takeInTimeView.getChildren().addAll(this.textFieldShowOnlyMedicationToTakeIn, this.choiceBoxShowOnlyMedicationToTakeIn);
-        takeInView.getChildren().addAll(this.textFieldShowOnlyMedicationToTakeInLabel, takeInTimeView);
-
         this.buttonAddMedication = new Button("Add new medication");
-        HBox middleBar = new HBox();
         Region spacer1 = new Region();
         HBox.setHgrow(spacer1, Priority.ALWAYS);
-        middleBar.getChildren().addAll(takeInTimeView, spacer1, this.buttonAddMedication);
+        takeInTimeView.getChildren().addAll(this.textFieldShowOnlyMedicationToTakeIn, this.choiceBoxShowOnlyMedicationToTakeIn, spacer1, this.buttonAddMedication);
+        middleBar.getChildren().addAll(this.textFieldShowOnlyMedicationToTakeInLabel, takeInTimeView);
 
 
         this.medicationListView = new ListView<>();
@@ -87,17 +86,16 @@ public class MainMenuView extends StackPane implements ViewHelper {
         this.buttonToggleMedicationObject.setOnAction(v -> MainMenuViewHandler.toggleMedicationObject(this));
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);
-        Region spacer2 = new Region();
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
-        buttonBox.getChildren().addAll(this.buttonSearchMedication, spacer2, this.buttonToggleMedicationObject);
+        buttonBox.getChildren().addAll(this.buttonSearchMedication, this.buttonToggleMedicationObject);
         this.buttonSearchMedication.setOnAction(this::updateListView);
-
+        this.medicationListLabel = new Label();
         VBox container = new VBox();
         container.getChildren().addAll(
                 topBar,
                 stockLowerView,
                 middleBar,
                 buttonBox,
+                this.medicationListLabel,
                 this.medicationListView
         );
         container.setSpacing(10);
@@ -133,6 +131,10 @@ public class MainMenuView extends StackPane implements ViewHelper {
 
     public Button getButtonSearchMedication() {
         return buttonSearchMedication;
+    }
+
+    public Label getMedicationListLabel() {
+        return medicationListLabel;
     }
 
     public ListView<String> getMedicationListView() {

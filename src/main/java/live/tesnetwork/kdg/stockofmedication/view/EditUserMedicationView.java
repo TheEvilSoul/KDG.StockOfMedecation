@@ -8,7 +8,7 @@ import live.tesnetwork.kdg.stockofmedication.utils.Filter;
 
 public class EditUserMedicationView extends StackPane implements ViewHelper {
     private Label medicationObjectLabel;
-    private ChoiceBox<String> medicationObjectChoiceBox;
+    private Button medicationObjectButton;
     private Button goBackButton;
     private Button saveButton;
     private Label medicationNameLabel;
@@ -31,13 +31,12 @@ public class EditUserMedicationView extends StackPane implements ViewHelper {
     @Override
     public void initialize() {
         this.medicationObjectLabel = new Label("Medication type");
-        this.medicationObjectChoiceBox = new ChoiceBox<>();
-        this.medicationObjectChoiceBox.getItems().addAll("Medication product");
-        this.medicationObjectChoiceBox.setValue("User medication");
-        this.medicationObjectChoiceBox.setOnAction(EditUserMedicationViewHandler::changeMedicationObject);
+        this.medicationObjectButton = new Button();
+        this.medicationObjectButton.setText("User medication");
+        this.medicationObjectButton.setOnAction(EditUserMedicationViewHandler::changeMedicationObject);
         HBox medicationObjectContainer = new HBox();
         medicationObjectContainer.setSpacing(10);
-        medicationObjectContainer.getChildren().addAll(medicationObjectLabel, medicationObjectChoiceBox);
+        medicationObjectContainer.getChildren().addAll(medicationObjectLabel, medicationObjectButton);
 
         this.goBackButton = new Button("Go back");
         this.goBackButton.setOnAction(EditUserMedicationViewHandler::goBack);
