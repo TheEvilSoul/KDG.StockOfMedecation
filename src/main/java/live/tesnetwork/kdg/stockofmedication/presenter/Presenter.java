@@ -24,7 +24,6 @@ public class Presenter {
             case "MainMenuView" -> MainView((MainMenuView) view, data);
             case "EditUserMedicationView" -> editUserMedication((EditUserMedicationView) view, data);
             case "EditMedicationView" -> editMedication((EditMedicationView) view, data);
-            default -> throw new IllegalArgumentException("Unexpected value: " + view.getClass().getSimpleName());
         }
     }
 

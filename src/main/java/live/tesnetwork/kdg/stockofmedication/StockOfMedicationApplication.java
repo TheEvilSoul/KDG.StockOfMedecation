@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class StockOfMedicationApplication extends Application {
     private static Stage stage;
-    private static final Presenter presenter = new Presenter();
     @Nullable
     private static User user;
     private static boolean canGoNegative = false;
