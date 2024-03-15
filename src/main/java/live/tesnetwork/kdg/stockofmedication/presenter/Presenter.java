@@ -18,19 +18,17 @@ import live.tesnetwork.kdg.stockofmedication.view.ViewHelper;
 import java.util.Arrays;
 
 public class Presenter {
-    public Presenter() {
 
-    }
-
-    public <T extends Parent & ViewHelper> void addDataTo(T view, Convertable data) {
+    public static <T extends Parent & ViewHelper> void addDataTo(T view, Convertable data) {
         switch (view.getClass().getSimpleName()) {
             case "MainMenuView" -> MainView((MainMenuView) view, data);
             case "EditUserMedicationView" -> editUserMedication((EditUserMedicationView) view, data);
             case "EditMedicationView" -> editMedication((EditMedicationView) view, data);
+            default -> throw new IllegalArgumentException("Unexpected value: " + view.getClass().getSimpleName());
         }
     }
 
-    public MainMenuView MainView(MainMenuView mainMenuView, Convertable data) {
+    public static MainMenuView MainView(MainMenuView mainMenuView, Convertable data) {
         User user = StockOfMedicationApplication.getUser();
 
         mainMenuView.setMedicationList(
@@ -51,7 +49,7 @@ public class Presenter {
         return mainMenuView;
     }
 
-    public void editUserMedication(EditUserMedicationView view, Convertable data) {
+    public static void editUserMedication(EditUserMedicationView view, Convertable data) {
         view.setMedicationNameList(
                 MedicationController.getMedications()
                         .stream()
@@ -63,8 +61,7 @@ public class Presenter {
                         .map(TimeUnits::toString)
                         .toArray(String[]::new)
         );
-        if (data != null && data instanceof UserMedication) {
-            UserMedication userMedication = (UserMedication) data;
+        if (data != null && data instanceof UserMedication userMedication) {
             view.getMedicationNameChoiceBox().setValue(userMedication.getMedication().getFullName());
             view.getMedicationStockTextField().setText(userMedication.getStock().toString());
             view.getMedicationAmountPerTimeUnitTextField().setText(userMedication.getAmountPerTimeUnit().toString());
@@ -73,14 +70,13 @@ public class Presenter {
         }
     }
 
-    public void editMedication(EditMedicationView view, Convertable data) {
+    public static void editMedication(EditMedicationView view, Convertable data) {
         view.setMedicationCategoryList(
                 Arrays.stream(MedicationController.getAllMedicationCategories())
                         .map(MedicationCategory::toString)
                         .toArray(String[]::new)
         );
-        if (data != null && data instanceof Medication) {
-            Medication medication = (Medication) data;
+        if (data != null && data instanceof Medication medication) {
             view.getMedicationNameTextField().setText(medication.getName());
             view.getMedicationCategoryChoiceBox().setValue(medication.getCategory().toString());
             view.getMedicationMgTextField().setText(medication.getMg().toString());

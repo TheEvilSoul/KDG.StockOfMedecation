@@ -16,12 +16,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class StockOfMedicationApplication extends Application {
     private static Stage stage;
-    private static Presenter presenter = new Presenter();
+    private static final Presenter presenter = new Presenter();
     @Nullable
     private static User user;
     private static boolean canGoNegative = false;
 
-    public static void setUser(User user) {
+    public static void setUser(@Nullable User user) {
         StockOfMedicationApplication.user = user;
     }
 
@@ -67,10 +67,9 @@ public class StockOfMedicationApplication extends Application {
     public static <T extends Parent & ViewHelper> void setView(T view, Convertable data) {
         try {
             view.initialize();
-            presenter.addDataTo(view, data);
+            Presenter.addDataTo(view, data);
         } catch (Exception e) {
             setView(new ErrorView("view initialization", "An error occurred while initializing the view. Please try again."));
-            e.printStackTrace();
             return;
         }
 

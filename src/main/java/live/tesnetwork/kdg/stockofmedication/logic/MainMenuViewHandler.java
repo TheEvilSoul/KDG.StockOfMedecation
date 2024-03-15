@@ -1,7 +1,6 @@
 package live.tesnetwork.kdg.stockofmedication.logic;
 
 import javafx.event.ActionEvent;
-import javafx.scene.control.ChoiceBox;
 import live.tesnetwork.kdg.stockofmedication.StockOfMedicationApplication;
 import live.tesnetwork.kdg.stockofmedication.controller.MedicationController;
 import live.tesnetwork.kdg.stockofmedication.entity.Medication;
@@ -15,9 +14,14 @@ import live.tesnetwork.kdg.stockofmedication.view.MainMenuView;
 import java.time.LocalDateTime;
 
 public class MainMenuViewHandler {
+
+    private static final String SHOW_MEDICATION = "Show Medication";
+
+    private MainMenuViewHandler() {
+    }
     public static void search(MainMenuView view) {
-        Integer stock = -1;
-        Integer time;
+        int stock = -1;
+        int time;
         String catT = view.getCategoryChoiceBox().getSelectionModel().getSelectedItem();
         if (catT == null || catT.isEmpty()) catT = "ALL";
         MedicationCategory cat = MedicationCategory.valueOf(catT);
@@ -72,9 +76,8 @@ public class MainMenuViewHandler {
         String id = mainMenuView.getMedicationListView().getSelectionModel().getSelectedItem();
         if (id == null) {
             StockOfMedicationApplication.giveError("No medication selected", "Please select a medication to edit.");
-            return;
         } else {
-            if (mainMenuView.getButtonToggleMedicationObject().getText().equals("Show Medication")) {
+            if (mainMenuView.getButtonToggleMedicationObject().getText().equals(SHOW_MEDICATION)) {
                 UserMedication userMedication = MedicationController.getUserMedication(user.getUsername(), id.split(" \\| ")[0]);
                 StockOfMedicationApplication.switchView(Views.EDIT_USER_MEDICATION, userMedication);
             } else {
@@ -90,7 +93,7 @@ public class MainMenuViewHandler {
         if (id == null) {
             StockOfMedicationApplication.giveError("No medication selected", "Please select a medication to delete.");
         } else {
-            if (view.getButtonToggleMedicationObject().getText().equals("Show Medication")) {
+            if (view.getButtonToggleMedicationObject().getText().equals(SHOW_MEDICATION)) {
                 UserMedication userMedication = MedicationController.getUserMedication(user.getUsername(), id.split(" \\| ")[0]);
                 MedicationController.deleteUserMedication(user.getUsername(), userMedication);
                 view.getMedicationListView().getItems().remove(id);
@@ -102,7 +105,7 @@ public class MainMenuViewHandler {
     }
 
     public static void toggleMedicationObject(MainMenuView view) {
-        if (view.getButtonToggleMedicationObject().getText().equals("Show Medication")) {
+        if (view.getButtonToggleMedicationObject().getText().equals(SHOW_MEDICATION)) {
             view.getButtonToggleMedicationObject().setText("Show UserMedication");
             view.getTextFieldShowOnlyMedicationBelow().setDisable(true);
             view.getTextFieldShowOnlyMedicationToTakeIn().setDisable(true);
@@ -111,7 +114,7 @@ public class MainMenuViewHandler {
             view.getMedicationListView().setStyle("-fx-background-color: red;");
             search(view);
         } else {
-            view.getButtonToggleMedicationObject().setText("Show Medication");
+            view.getButtonToggleMedicationObject().setText(SHOW_MEDICATION);
             view.getTextFieldShowOnlyMedicationBelow().setDisable(false);
             view.getTextFieldShowOnlyMedicationToTakeIn().setDisable(false);
             StockOfMedicationApplication.setTitle("User medication view");
