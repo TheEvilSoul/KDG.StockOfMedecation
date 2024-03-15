@@ -7,6 +7,7 @@ import live.tesnetwork.kdg.stockofmedication.enums.TimeUnits;
 import live.tesnetwork.kdg.stockofmedication.utils.Config;
 import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
 import live.tesnetwork.kdg.stockofmedication.utils.EncryptionHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,9 +46,12 @@ public class FileDatabaseController implements DatabaseController {
         return true;
     }
 
+    @Nullable
     @Override
     public Medication getMedication(String name) {
-        return readFromFile(getOrCreateFile(medicationPath, name, false));
+        File file = getOrCreateFile(medicationPath, name, false);
+        if (!file.exists()) return null;
+        return readFromFile(file);
     }
 
     @Override
@@ -63,7 +67,9 @@ public class FileDatabaseController implements DatabaseController {
 
     @Override
     public UserMedication getUserMedication(String id, String name) {
-        return readFromFile(getOrCreateFile(userMedicationPath, id, name, false));
+        File file = getOrCreateFile(userMedicationPath, id, name, false);
+        if (!file.exists()) return null;
+        return readFromFile(file);
     }
 
     @Override
@@ -247,5 +253,12 @@ public class FileDatabaseController implements DatabaseController {
             }
             saveUserMedication(id, userMedication);
         }
+    }
+
+    @Override
+    public boolean deleteUser(String newUser) {
+        File file = getOrCreateFile(userPath, newUser, false);
+        if (file.exists()) return file.delete();
+        return true;
     }
 }

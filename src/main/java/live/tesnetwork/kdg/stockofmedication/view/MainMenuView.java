@@ -30,12 +30,16 @@ public class MainMenuView extends StackPane implements ViewHelper {
 
     @Override
     public void initialize() {
+        this.buttonLogout = new Button("Logout");
         this.categoryChoiceBoxLabel = new Label("Category:");
         this.categoryChoiceBox = new ChoiceBox<>();
 
         HBox categoryChoiceView = new HBox();
         categoryChoiceView.setSpacing(10);
         categoryChoiceView.getChildren().addAll(this.categoryChoiceBoxLabel, this.categoryChoiceBox);
+
+        HBox topBar = new HBox();
+        topBar.getChildren().addAll(categoryChoiceView, this.buttonLogout);
 
         this.textFieldShowOnlyMedicationBelowLabel = new Label("Show only medication with stock lower than:");
         this.textFieldShowOnlyMedicationBelow = new TextField();
@@ -72,7 +76,6 @@ public class MainMenuView extends StackPane implements ViewHelper {
         this.buttonSearchMedication = new Button("Search");
         this.buttonAddMedication = new Button("Add new medication");
         this.buttonAddMedication.setOnAction(MainMenuViewHandler::addMedication);
-        this.buttonLogout = new Button("Logout");
         this.buttonLogout.setOnAction(MainMenuViewHandler::logout);
         this.buttonToggleMedicationObject = new Button("Show Medication");
         this.buttonToggleMedicationObject.setOnAction(v -> MainMenuViewHandler.toggleMedicationObject(this));
@@ -83,7 +86,7 @@ public class MainMenuView extends StackPane implements ViewHelper {
 
         VBox container = new VBox();
         container.getChildren().addAll(
-                categoryChoiceView,
+                topBar,
                 stockLowerView,
                 takeInView,
                 buttonBox,

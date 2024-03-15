@@ -36,4 +36,6 @@ public interface DatabaseController {
     boolean createUser(String username, String password);
 
     void updateStockFromTakeIn(String id, boolean canGoNegative);
+
+    boolean deleteUser(String newUser);
 }
