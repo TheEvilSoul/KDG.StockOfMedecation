@@ -2,7 +2,7 @@ package live.tesnetwork.kdg.stockofmedication.logic;
 
 import live.tesnetwork.kdg.stockofmedication.StockOfMedicationApplication;
 import live.tesnetwork.kdg.stockofmedication.controller.DatabaseController;
-import live.tesnetwork.kdg.stockofmedication.entity.User;
+import live.tesnetwork.kdg.stockofmedication.model.User;
 import live.tesnetwork.kdg.stockofmedication.enums.Views;
 import live.tesnetwork.kdg.stockofmedication.utils.EncryptionHelper;
 import live.tesnetwork.kdg.stockofmedication.view.LoginView;

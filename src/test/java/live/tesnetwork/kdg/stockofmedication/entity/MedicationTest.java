@@ -1,5 +1,7 @@
 package live.tesnetwork.kdg.stockofmedication.entity;
 
+import live.tesnetwork.kdg.stockofmedication.model.Medication;
+import live.tesnetwork.kdg.stockofmedication.model.MedicationCategory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

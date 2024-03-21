@@ -1,8 +1,8 @@
 package live.tesnetwork.kdg.stockofmedication.controller;
 
-import live.tesnetwork.kdg.stockofmedication.entity.Medication;
-import live.tesnetwork.kdg.stockofmedication.entity.MedicationCategory;
-import live.tesnetwork.kdg.stockofmedication.entity.UserMedication;
+import live.tesnetwork.kdg.stockofmedication.model.Medication;
+import live.tesnetwork.kdg.stockofmedication.model.MedicationCategory;
+import live.tesnetwork.kdg.stockofmedication.model.UserMedication;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

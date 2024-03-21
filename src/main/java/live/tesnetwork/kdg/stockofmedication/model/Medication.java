@@ -1,4 +1,4 @@
-package live.tesnetwork.kdg.stockofmedication.entity;
+package live.tesnetwork.kdg.stockofmedication.model;
 
 import live.tesnetwork.kdg.stockofmedication.utils.Convertable;
 

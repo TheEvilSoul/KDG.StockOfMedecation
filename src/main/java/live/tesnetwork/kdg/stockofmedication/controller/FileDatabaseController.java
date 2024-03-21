@@ -1,8 +1,8 @@
 package live.tesnetwork.kdg.stockofmedication.controller;
 
-import live.tesnetwork.kdg.stockofmedication.entity.Medication;
-import live.tesnetwork.kdg.stockofmedication.entity.User;
-import live.tesnetwork.kdg.stockofmedication.entity.UserMedication;
+import live.tesnetwork.kdg.stockofmedication.model.Medication;
+import live.tesnetwork.kdg.stockofmedication.model.User;
+import live.tesnetwork.kdg.stockofmedication.model.UserMedication;
 import live.tesnetwork.kdg.stockofmedication.enums.TimeUnits;
 import live.tesnetwork.kdg.stockofmedication.utils.Config;
 import live.tesnetwork.kdg.stockofmedication.utils.Convertable;

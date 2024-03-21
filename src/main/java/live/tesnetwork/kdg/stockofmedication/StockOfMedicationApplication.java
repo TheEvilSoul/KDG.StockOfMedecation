@@ -7,7 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import live.tesnetwork.kdg.stockofmedication.controller.MedicationController;
-import live.tesnetwork.kdg.stockofmedication.entity.User;
+import live.tesnetwork.kdg.stockofmedication.model.User;
 import live.tesnetwork.kdg.stockofmedication.enums.Views;
 import live.tesnetwork.kdg.stockofmedication.presenter.Presenter;
 import live.tesnetwork.kdg.stockofmedication.utils.Convertable;

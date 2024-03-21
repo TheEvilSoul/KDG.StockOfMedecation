@@ -3,8 +3,8 @@ package live.tesnetwork.kdg.stockofmedication.logic;
 import javafx.event.ActionEvent;
 import live.tesnetwork.kdg.stockofmedication.StockOfMedicationApplication;
 import live.tesnetwork.kdg.stockofmedication.controller.MedicationController;
-import live.tesnetwork.kdg.stockofmedication.entity.Medication;
-import live.tesnetwork.kdg.stockofmedication.entity.MedicationCategory;
+import live.tesnetwork.kdg.stockofmedication.model.Medication;
+import live.tesnetwork.kdg.stockofmedication.model.MedicationCategory;
 import live.tesnetwork.kdg.stockofmedication.enums.Views;
 import live.tesnetwork.kdg.stockofmedication.view.EditMedicationView;
 
