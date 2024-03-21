@@ -82,7 +82,7 @@ public class MainMenuView extends StackPane implements ViewHelper {
         this.buttonSearchMedication = new Button("Search");
         this.buttonAddMedication.setOnAction(MainMenuViewHandler::addMedication);
         this.buttonLogout.setOnAction(MainMenuViewHandler::logout);
-        this.buttonToggleMedicationObject = new Button("Show Medication");
+        this.buttonToggleMedicationObject = new Button("Switch to Medication");
         this.buttonToggleMedicationObject.setOnAction(v -> MainMenuViewHandler.toggleMedicationObject(this));
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);

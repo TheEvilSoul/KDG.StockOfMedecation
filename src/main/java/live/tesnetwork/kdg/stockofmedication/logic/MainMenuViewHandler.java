@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 public class MainMenuViewHandler {
 
-    private static final String SHOW_MEDICATION = "Show Medication";
+    private static final String SHOW_MEDICATION = "Switch to Medication";
 
     private MainMenuViewHandler() {
     }
@@ -38,7 +38,7 @@ public class MainMenuViewHandler {
         else {
             time = -1;
         }
-        if (view.getButtonToggleMedicationObject().getText().equals("Show Medication")) {
+        if (view.getButtonToggleMedicationObject().getText().equals(SHOW_MEDICATION)) {
             User user = StockOfMedicationApplication.getUser();
             Integer finalStock = stock;
             LocalDateTime now = LocalDateTime.now();
@@ -106,7 +106,7 @@ public class MainMenuViewHandler {
 
     public static void toggleMedicationObject(MainMenuView view) {
         if (view.getButtonToggleMedicationObject().getText().equals(SHOW_MEDICATION)) {
-            view.getButtonToggleMedicationObject().setText("Show UserMedication");
+            view.getButtonToggleMedicationObject().setText("Switch to UserMedication");
             view.getTextFieldShowOnlyMedicationBelow().setDisable(true);
             view.getTextFieldShowOnlyMedicationToTakeIn().setDisable(true);
             StockOfMedicationApplication.setTitle("Medication view");
